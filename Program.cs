@@ -8,60 +8,80 @@ namespace PersonnummerCheck
         {
             //variables (long is needed)
             long personalNumber;
+            bool showMenu = true;
 
-            //welcome menu
-            PrintMenu();
+            //menu loop
+            while ( showMenu )
+            {
 
-            //take input
-            personalNumber = GetUserInput();
+                //welcome menu
+                PrintMenu();
 
-            //check valid year
+                //take input
+                personalNumber = GetUserInput();
 
+                //exit loop
+                if (personalNumber == 0)
+                    break;
 
-            //check valid month
+                //check valid year
+                showMenu = ValidYearCheck(personalNumber);
 
-
-            //check valid day
-
-
-            //check valid last numbers (man||woman)
-
-
-            //return if whole number is valid and if man or woman ((ändra grammatik här))
-
-            // ask for nother number(loop?)
+                //check valid month
 
 
+                //check valid day
+
+
+                //check valid last numbers (man||woman)
+
+
+                //return if whole number is valid and if man or woman ((ändra grammatik här))
+
+
+
+            }
 
 
 
             //stop
-            Console.WriteLine("\n\n Press any button to close");
+            Console.WriteLine("\n\nPress any button to close");
             Console.ReadKey();
         }
 
         static void PrintMenu()
         {
+            Console.Clear();
             Console.WriteLine("***Välkommen till PersonnummerCheck!***");
             Console.WriteLine("Detta program kollar om det angivna personnumret är giltigt.");
-            Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****) :  ");
+            Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****):  ");
+            Console.WriteLine("Enter '0' to quit.");
         }
 
         static long GetUserInput()
         {
-
             long intUserInput;
-
             string userInput = Console.ReadLine();
 
             //adding error handling later :)
             while (!long.TryParse(userInput, out intUserInput))
             {
-                Console.WriteLine("true");
+                Console.WriteLine("fail");
                 break;
             }
 
+            if (intUserInput == 0)
+                return 0;
+
             return intUserInput;
+        }
+
+        static bool ValidYearCheck(long personalNumber)
+        {
+
+
+
+            return true;
         }
     }
 }
