@@ -6,11 +6,14 @@ namespace PersonnummerCheck
     {
         static void Main(string[] args)
         {
+            //variables (long is needed)
+            long personalNumber;
+
             //welcome menu
             PrintMenu();
 
             //take input
-
+            personalNumber = GetUserInput();
 
             //check valid year
 
@@ -33,6 +36,7 @@ namespace PersonnummerCheck
 
 
             //stop
+            Console.WriteLine("\n\n Press any button to close");
             Console.ReadKey();
         }
 
@@ -41,6 +45,23 @@ namespace PersonnummerCheck
             Console.WriteLine("***Välkommen till PersonnummerCheck!***");
             Console.WriteLine("Detta program kollar om det angivna personnumret är giltigt.");
             Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****) :  ");
+        }
+
+        static long GetUserInput()
+        {
+
+            long intUserInput;
+
+            string userInput = Console.ReadLine();
+
+            //adding error handling later :)
+            while (!long.TryParse(userInput, out intUserInput))
+            {
+                Console.WriteLine("true");
+                break;
+            }
+
+            return intUserInput;
         }
     }
 }
