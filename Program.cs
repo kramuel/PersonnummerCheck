@@ -7,7 +7,7 @@ namespace PersonnummerCheck
         static void Main(string[] args)
         {
             //welcome menu
-
+            PrintMenu();
 
             //take input
 
@@ -24,7 +24,7 @@ namespace PersonnummerCheck
             //check valid last numbers (man||woman)
 
 
-            //return if whole number is valid and if man or woman
+            //return if whole number is valid and if man or woman ((ändra grammatik här))
 
             // ask for nother number(loop?)
 
@@ -32,7 +32,15 @@ namespace PersonnummerCheck
 
 
 
+            //stop
+            Console.ReadKey();
+        }
 
+        static void PrintMenu()
+        {
+            Console.WriteLine("***Välkommen till PersonnummerCheck!***");
+            Console.WriteLine("Detta program kollar om det angivna personnumret är giltigt.");
+            Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****) :  ");
         }
     }
 }
