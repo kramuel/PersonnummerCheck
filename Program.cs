@@ -21,7 +21,7 @@ namespace PersonnummerCheck
                 //take input
                 personalNumber = GetUserInput();
 
-                //exit loop
+                //exit loop(program)
                 if (personalNumber == "0")
                     showMenu = false;
 
@@ -29,7 +29,7 @@ namespace PersonnummerCheck
                 validation = ValidYearCheck(personalNumber);
 
                 //check valid month
-
+                validation = ValidMonthCheck(personalNumber);
 
                 //check valid day
 
@@ -38,7 +38,7 @@ namespace PersonnummerCheck
 
 
                 //return if whole number is valid and if man or woman ((ändra grammatik här))
-                //alltså if-sats om showmenu blev false eller true
+                //alltså if-sats om validation blev false eller true
                 if (validation == false)
                 {
                     Console.WriteLine("The Personalnumber IS NOT VALIDATED");
@@ -59,6 +59,7 @@ namespace PersonnummerCheck
             Console.WriteLine("\n\nPress any button to close");
             Console.ReadKey();
         }
+
 
         /// <summary>
         /// Clears Console and prints menu.
@@ -105,7 +106,7 @@ namespace PersonnummerCheck
         }
 
         /// <summary>
-        /// Checks if the year is OK
+        /// Checks if the year is OK(valid)
         /// </summary>
         /// <param name="personalNumber"></param>
         /// <returns></returns>
@@ -124,6 +125,16 @@ namespace PersonnummerCheck
                 return true;
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Checks if Month is OK(valid)
+        /// </summary>
+        /// <param name="personalNumber"></param>
+        /// <returns></returns>
+        static bool ValidMonthCheck(string personalNumber)
+        {
+            throw new NotImplementedException();
         }
     }
 }
