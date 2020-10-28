@@ -7,8 +7,9 @@ namespace PersonnummerCheck
         static void Main(string[] args)
         {
             //variables (long is needed)
-            long personalNumber;
+            string personalNumber;
             bool showMenu = true;
+            bool validation = false;
 
             //menu loop
             while ( showMenu )
@@ -21,11 +22,11 @@ namespace PersonnummerCheck
                 personalNumber = GetUserInput();
 
                 //exit loop
-                if (personalNumber == 0)
-                    break;
+                if (personalNumber == "0")
+                    showMenu = false;
 
                 //check valid year
-                showMenu = ValidYearCheck(personalNumber);
+                validation = ValidYearCheck(personalNumber);
 
                 //check valid month
 
@@ -37,9 +38,19 @@ namespace PersonnummerCheck
 
 
                 //return if whole number is valid and if man or woman ((ändra grammatik här))
+                //alltså if-sats om showmenu blev false eller true
+                if (validation == false)
+                {
+                    Console.WriteLine("The Personalnumber IS NOT VALIDATED");
+                }
+                else
+                {
+                    Console.WriteLine("The Personalnumber VALIDATED, CORRECT");
+                }
 
 
-
+                Console.WriteLine("Press any key to try again.");
+                Console.ReadKey();
             }
 
 
@@ -49,6 +60,9 @@ namespace PersonnummerCheck
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Clears Console and prints menu.
+        /// </summary>
         static void PrintMenu()
         {
             Console.Clear();
@@ -58,30 +72,58 @@ namespace PersonnummerCheck
             Console.WriteLine("Enter '0' to quit.");
         }
 
-        static long GetUserInput()
+
+        /// <summary>
+        /// Takes users input and returns a validated string. Loops if bad string is entered.
+        /// Input string has to be 12 characters.
+        /// </summary>
+        /// <returns></returns>
+        static string GetUserInput()
         {
             long intUserInput;
             string userInput = Console.ReadLine();
 
-            //adding error handling later :)
+            //adding better error handling later :)
+            //checks if the string consists of numbers
             while (!long.TryParse(userInput, out intUserInput))
             {
-                Console.WriteLine("fail");
-                break;
+                Console.WriteLine("Incorrect input, please try again: ");
+                userInput = Console.ReadLine();
             }
 
-            if (intUserInput == 0)
-                return 0;
+            if (userInput == "0")
+                return "0";
 
-            return intUserInput;
+            // add "or 10" digits later
+            while ( userInput.Length != 12)
+            {
+                Console.WriteLine("Incorrect input, please try again: ");
+                userInput = Console.ReadLine();
+            }
+
+            return userInput;
         }
 
-        static bool ValidYearCheck(long personalNumber)
+        /// <summary>
+        /// Checks if the year is OK
+        /// </summary>
+        /// <param name="personalNumber"></param>
+        /// <returns></returns>
+        static bool ValidYearCheck(string personalNumber)
         {
+            string year;
+            int intYear;
 
+            //takes 4 firsts digits, change later if only 10 digits is entered
+            year = personalNumber.Substring(0, 4);
 
+            intYear = int.Parse(year);
 
-            return true;
+            
+            if (intYear >= 1753 && intYear <= 2020)
+                return true;
+            else
+                return false;
         }
     }
 }
