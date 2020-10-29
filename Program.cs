@@ -8,7 +8,7 @@ namespace PersonnummerCheck
         {
             //variables 
             string personalNumber;
-            int year, month, day, birthNumber;
+            int year, month, day;
             bool showMenu = true;
             bool validation = false;
             bool woman;
@@ -37,7 +37,7 @@ namespace PersonnummerCheck
                 validation = ValidDayCheck(personalNumber, year, month, out day);
 
                 //check valid last numbers (man||woman)  3 numbers can only be 000-999 no check needed
-                
+                woman = CheckIfWoman(personalNumber);
 
                 //check if validated or not and output if the p-number is correct or not
                 if (validation == false)
@@ -47,15 +47,16 @@ namespace PersonnummerCheck
                 else
                 {
                     Console.WriteLine("The Personalnumber VALIDATED, CORRECT");
+                    if (woman)
+                        Console.WriteLine("This persons legal gender is Woman");
+                    else
+                        Console.WriteLine("This persons legal gender is Man");
                 }
 
-
+                //pause
                 Console.WriteLine("Press any key to try again.");
                 Console.ReadKey();
             }
-
-
-
             //stop
             Console.WriteLine("\n\nPress any key to close");
             Console.ReadKey();
@@ -193,10 +194,26 @@ namespace PersonnummerCheck
         /// <returns></returns>
         static bool LeapYearCheck(int year)
         {
-            //
+            //boolean that checks if year is divisible by 400, then if divisible by 4 and NOT by 100
             return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
-
         }
 
+        /// <summary>
+        /// Returns true if woman. Checks if BirthNumber is odd or even
+        /// </summary>
+        /// <param name="personalNumber"></param>
+        /// <returns></returns>
+        static bool CheckIfWoman(string personalNumber)
+        {
+            string birthNumber;
+
+            birthNumber = personalNumber.Substring(8, 3);
+            int intBirthNum = int.Parse(birthNumber);
+
+            if (intBirthNum % 2 == 0)
+                return true;
+            else
+                return false;
+        }
     }
 }
