@@ -8,6 +8,7 @@ namespace PersonnummerCheck
         {
             //variables (long is needed)
             string personalNumber;
+            int year, month, day;
             bool showMenu = true;
             bool validation = false;
 
@@ -23,16 +24,16 @@ namespace PersonnummerCheck
 
                 //exit loop(program)
                 if (personalNumber == "0")
-                    showMenu = false;
+                    break;
 
                 //check valid year
-                validation = ValidYearCheck(personalNumber);
+                validation = ValidYearCheck(personalNumber, out year);
 
                 //check valid month
-                validation = ValidMonthCheck(personalNumber);
+                validation = ValidMonthCheck(personalNumber, out month);
 
                 //check valid day
-
+                validation = ValidDayCheck(personalNumber, year, month, out day);
 
                 //check valid last numbers (man||woman)
 
@@ -56,7 +57,7 @@ namespace PersonnummerCheck
 
 
             //stop
-            Console.WriteLine("\n\nPress any button to close");
+            Console.WriteLine("\n\nPress any key to close");
             Console.ReadKey();
         }
 
@@ -110,17 +111,17 @@ namespace PersonnummerCheck
         /// </summary>
         /// <param name="personalNumber"></param>
         /// <returns></returns>
-        static bool ValidYearCheck(string personalNumber)
+        static bool ValidYearCheck(string personalNumber, out int intYear)
         {
             string year;
-            int intYear;
+            //int intYear;
 
             //takes 4 firsts digits, change later if only 10 digits is entered
             year = personalNumber.Substring(0, 4);
 
             intYear = int.Parse(year);
 
-            
+            //checks if YYYY is 1753-2020, return true if it is
             if (intYear >= 1753 && intYear <= 2020)
                 return true;
             else
@@ -132,9 +133,42 @@ namespace PersonnummerCheck
         /// </summary>
         /// <param name="personalNumber"></param>
         /// <returns></returns>
-        static bool ValidMonthCheck(string personalNumber)
+        static bool ValidMonthCheck(string personalNumber, out int intMonth)
         {
-            throw new NotImplementedException();
+            string month;
+            //int intMonth;
+
+            //takes 5th and 6th character and parses to an Integer
+            month = personalNumber.Substring(4, 2);
+            intMonth = int.Parse(month);
+
+            //checks if MM is 1-12, return true if it is
+            if (intMonth >= 1 && intMonth <= 12)
+                return true;
+            else
+                return false;
+
         }
+
+        /// <summary>
+        /// Checks if day is valid, regards to month and year
+        /// </summary>
+        /// <param name="personalNumber"></param>
+        /// <returns></returns>
+        static bool ValidDayCheck(string personalNumber, int year, int month, out int intDay)
+        {
+            string day;
+            
+
+            day = personalNumber.Substring(6, 2);
+            intDay = int.Parse(day);
+
+            
+
+            return true;
+        }
+
+
+
     }
 }
