@@ -9,12 +9,12 @@ namespace PersonnummerCheck
             //variables 
             string personalNumber;
             int year, month, day;
-            bool showMenu = true;
+            //bool showMenu = true;
             bool validation = false;
             bool woman;
 
             //menu loop
-            while (showMenu)
+            while (true)
             {
 
                 //welcome menu
