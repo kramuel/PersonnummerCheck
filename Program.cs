@@ -24,11 +24,11 @@ namespace PersonnummerCheck
                 if (personalNumber == "0")
                     break;
 
-                //assign substrings
+                //splits personalnumber into substrings and parses to integers
                 SplitPersonalNumber(personalNumber, out year, out month, out day, out birthNumber);
 
-                //checks if year, month and day Valid
-                if (ValidYearCheck(year) && ValidMonthCheck(month) && ValidDayCheck(year, month, day))
+                //checks if year, month and day is Valid
+                if (ValidDateCheck(year, month, day))
                 {
                     Console.WriteLine("The Personalnumber VALIDATED, CORRECT");
                     //check valid last numbers (man||woman)  3 numbers can only be 000-999 no check needed
@@ -104,6 +104,7 @@ namespace PersonnummerCheck
         /// <param name="birthNumber"></param>
         static void SplitPersonalNumber(string personalNumber, out int year, out int month, out int day, out int birthNumber)
         {
+            //YYYYMMDDnnnc
             year = int.Parse(personalNumber.Substring(0, 4));
             month = int.Parse(personalNumber.Substring(4, 2));
             day = int.Parse(personalNumber.Substring(6, 2));
@@ -111,50 +112,29 @@ namespace PersonnummerCheck
         }
 
         /// <summary>
-        /// Checks if the year is OK(valid)
-        /// </summary>
-        /// <param name="personalNumber"></param>
-        /// <returns></returns>
-        static bool ValidYearCheck(int year)
-        {
-            //returns true if year is 1753-2020
-            if (year >= 1753 && year <= 2020)
-                return true;
-            else
-                return false;
-        }
-
-        /// <summary>
-        /// Checks if Month is OK(valid)
-        /// </summary>
-        /// <param name="personalNumber"></param>
-        /// <returns></returns>
-        static bool ValidMonthCheck(int month)
-        {
-            //returns true if month is 1-12
-            if (month >= 1 && month <= 12)
-                return true;
-            else
-                return false;
-
-        }
-
-        /// <summary>
         /// Checks if day is valid, regards to month and year
         /// </summary>
         /// <param name="personalNumber"></param>
         /// <returns></returns>
-        static bool ValidDayCheck(int year, int month, int day)
+        static bool ValidDateCheck(int year, int month, int day)
         {
             bool leapYear;
 
-            leapYear = LeapYearCheck(year);
+            //checks if year is valid and if leap year
+            if (year >= 1753 && year <= 2020)
+            { 
+                leapYear = LeapYearCheck(year);
+            }
+            else
+            {
+                return false;
+            }
 
             //day can be between 1 and 31 in these months (jan,mar,may,jul,aug,oct,dec)
             if ((day >= 1 && day <= 31) && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12))
             {
                 return true;
-            }//day can be between 1 and 30 in these months ( apr,jun,sep,nov
+            }//day can be between 1 and 30 in these months ( apr,jun,sep,nov )
             else if ((day >= 1 && day <= 30) && (month == 4 || month == 6 || month == 9 || month == 11))
             {
                 return true;
