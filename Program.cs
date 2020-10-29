@@ -6,14 +6,15 @@ namespace PersonnummerCheck
     {
         static void Main(string[] args)
         {
-            //variables (long is needed)
+            //variables 
             string personalNumber;
-            int year, month, day;
+            int year, month, day, birthNumber;
             bool showMenu = true;
             bool validation = false;
+            bool woman;
 
             //menu loop
-            while ( showMenu )
+            while (showMenu)
             {
 
                 //welcome menu
@@ -35,11 +36,10 @@ namespace PersonnummerCheck
                 //check valid day
                 validation = ValidDayCheck(personalNumber, year, month, out day);
 
-                //check valid last numbers (man||woman)
+                //check valid last numbers (man||woman)  3 numbers can only be 000-999 no check needed
+                
 
-
-                //return if whole number is valid and if man or woman ((ändra grammatik här))
-                //alltså if-sats om validation blev false eller true
+                //check if validated or not and output if the p-number is correct or not
                 if (validation == false)
                 {
                     Console.WriteLine("The Personalnumber IS NOT VALIDATED");
@@ -60,7 +60,6 @@ namespace PersonnummerCheck
             Console.WriteLine("\n\nPress any key to close");
             Console.ReadKey();
         }
-
 
         /// <summary>
         /// Clears Console and prints menu.
@@ -114,7 +113,6 @@ namespace PersonnummerCheck
         static bool ValidYearCheck(string personalNumber, out int intYear)
         {
             string year;
-            //int intYear;
 
             //takes 4 firsts digits, change later if only 10 digits is entered
             year = personalNumber.Substring(0, 4);
@@ -136,7 +134,6 @@ namespace PersonnummerCheck
         static bool ValidMonthCheck(string personalNumber, out int intMonth)
         {
             string month;
-            //int intMonth;
 
             //takes 5th and 6th character and parses to an Integer
             month = personalNumber.Substring(4, 2);
@@ -158,17 +155,48 @@ namespace PersonnummerCheck
         static bool ValidDayCheck(string personalNumber, int year, int month, out int intDay)
         {
             string day;
-            
-
+            bool leapYear;
+ 
             day = personalNumber.Substring(6, 2);
             intDay = int.Parse(day);
 
-            
+            leapYear = LeapYearCheck(year);
 
-            return true;
+            //day can be between 1 and 31 in these months (jan,mar,may,jul,aug,oct,dec)
+            if ((intDay >= 1 && intDay <= 31) && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12))
+            {
+                return true;
+            }//day can be between 1 and 30 in these months ( apr,jun,sep,nov
+            else if ((intDay >= 1 && intDay <= 30) && (month == 4 || month == 6 || month == 9 || month == 11))
+            {
+                return true;
+            }//day can be between 1 and 28 in feb (if not leapyear)
+            else if ((intDay >= 1 && intDay <= 28) && month == 2)
+            {
+                return true;
+            }//day can be 29 in feb if leapyear
+            else if (intDay == 29 && month == 2 && leapYear)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
+        /// <summary>
+        /// Returns true if year is a leap year
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        static bool LeapYearCheck(int year)
+        {
+            //
+            return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 
+        }
 
     }
 }
