@@ -65,7 +65,8 @@ namespace PersonnummerCheck
             Console.Clear();
             Console.WriteLine("***Välkommen till PersonnummerCheck!***");
             Console.WriteLine("Detta program kollar om det angivna personnumret är giltigt.");
-            Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****):  ");
+            Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****) eller 10 siffror (YYMMDD-****) " +
+                "\n(skiljetecknet ska vara + eller - beroende på vilket århundrade):  ");
             Console.WriteLine("Enter '0' to quit.");
         }
 
@@ -217,29 +218,5 @@ namespace PersonnummerCheck
             return birthNumber % 2 == 0;
         }
 
-        ///// <summary>
-        ///// Checks if input was in format YYYY or YY, adds 1900or2000 depending on input
-        ///// Returns true if year is in valid range ( 1753 - 2020 )
-        ///// </summary>
-        ///// <param name="year"></param>
-        ///// <param name="plusOrMinus"></param>
-        ///// <returns></returns>
-        //static bool ValidYearCheck(ref int year, string plusOrMinus)
-        //{
-        //    if (plusOrMinus == "+")
-        //    {
-        //        year += 1900;
-        //    }
-        //    else if (plusOrMinus == "-")
-        //    {
-        //        year += 2000;
-        //    }
-
-        //    //returns true if year is 1753-2020
-        //    if (year >= 1753 && year <= 2020)
-        //        return true;
-        //    else
-        //        return false;
-        //}
     }
 }
