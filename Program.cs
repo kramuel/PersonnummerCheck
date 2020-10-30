@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 
 namespace PersonnummerCheck
@@ -9,7 +10,7 @@ namespace PersonnummerCheck
         {
             //variables 
             string personalNumber;
-            int year, month, day, birthNumber;
+            int year, month, day, birthNumber, controlNumber;
             string plusOrMinus;
 
             //menu loop
@@ -26,10 +27,10 @@ namespace PersonnummerCheck
                     break;
 
                 //splits personalnumber into substrings and parses to integers
-                SplitPersonalNumber(personalNumber, plusOrMinus, out year, out month, out day, out birthNumber);
+                SplitPersonalNumber(personalNumber, plusOrMinus, out year, out month, out day, out birthNumber, out controlNumber);
 
                 //checks if year, month and day is Valid
-                if (ValidDateCheck(year, month, day))
+                if (ValidDateCheck(year, month, day) && ControlNumberCheck(personalNumber))
                 {
                     Console.WriteLine("Detta personnummer är VALIDERAT/GILTIGT OCH KORREKT");
                     //check valid last numbers (man||woman)  3 numbers can only be 000-999 no check needed
@@ -126,7 +127,7 @@ namespace PersonnummerCheck
         /// <param name="month"></param>
         /// <param name="day"></param>
         /// <param name="birthNumber"></param>
-        static void SplitPersonalNumber(string personalNumber, string plusOrMinus, out int year, out int month, out int day, out int birthNumber)
+        static void SplitPersonalNumber(string personalNumber, string plusOrMinus, out int year, out int month, out int day, out int birthNumber, out int controlNumber)
         {
             //YYYYMMDDnnnc
             if (personalNumber.Length == 12)
@@ -135,6 +136,7 @@ namespace PersonnummerCheck
                 month = int.Parse(personalNumber.Substring(4, 2));
                 day = int.Parse(personalNumber.Substring(6, 2));
                 birthNumber = int.Parse(personalNumber.Substring(8, 3));
+                controlNumber = int.Parse(personalNumber.Substring(11, 3));
             }
             //YYMMDD-nnnc || YYMMDD+nnnc
             else if (personalNumber.Length == 10)
@@ -143,6 +145,7 @@ namespace PersonnummerCheck
                 month = int.Parse(personalNumber.Substring(2, 2));
                 day = int.Parse(personalNumber.Substring(4, 2));
                 birthNumber = int.Parse(personalNumber.Substring(6, 3));
+                controlNumber = int.Parse(personalNumber.Substring(9, 3));
 
                 if (plusOrMinus == "+")
                 {
@@ -153,12 +156,13 @@ namespace PersonnummerCheck
                     year += 2000;
                 }
             }
-            else
+            else//default assign
             {
                 year = 0;
                 month = 0;
                 day = 0;
                 birthNumber = 0;
+                controlNumber = 0;
             }
         }
 
@@ -218,5 +222,17 @@ namespace PersonnummerCheck
             return birthNumber % 2 == 0;
         }
 
+        static bool ControlNumberCheck(string personalNumber)
+        {
+
+            for (int i = 0; i < personalNumber.Length; i++)
+            {
+
+            }
+
+
+
+            return true;
+        }
     }
 }
