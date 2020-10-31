@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading;
 
 namespace PersonnummerCheck
 {
@@ -29,8 +30,8 @@ namespace PersonnummerCheck
                 //splits personalnumber into substrings and parses to integers
                 SplitPersonalNumber(personalNumber, plusOrMinus, out year, out month, out day, out birthNumber, out controlNumber);
 
-                //checks if year, month and day is Valid
-                if (ValidDateCheck(year, month, day) && ControlNumberCheck(personalNumber))
+                //checks if year, month and day AND checks controlnumber with luhn-algorithm
+                if (ValidDateCheck(year, month, day) && ControlNumberCheck(personalNumber, controlNumber))
                 {
                     Console.WriteLine("Detta personnummer är VALIDERAT/GILTIGT OCH KORREKT");
                     //check valid last numbers (man||woman)  3 numbers can only be 000-999 no check needed
@@ -42,6 +43,7 @@ namespace PersonnummerCheck
                     {
                         Console.WriteLine("Det juridiska könet är MAN");
                     }
+                    //obs^ (this only writes out if validation is succesful, no use calculation gender if there is something wrong?)
                 }
                 else
                 {
@@ -67,7 +69,7 @@ namespace PersonnummerCheck
             Console.WriteLine("***Välkommen till PersonnummerCheck!***");
             Console.WriteLine("Detta program kollar om det angivna personnumret är giltigt.");
             Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****) eller 10 siffror (YYMMDD-****) " +
-                "\n(skiljetecknet ska vara + eller - beroende på vilket århundrade):  ");
+                "\n(skiljetecknet ska vara + eller - beroende på vilket århundrade. + = 1900, - = 2000):  ");
             Console.WriteLine("Enter '0' to quit.");
         }
 
@@ -80,14 +82,18 @@ namespace PersonnummerCheck
         {
             string userInput = Console.ReadLine();
             plusOrMinus = "";
-            bool punctMarkOK = true;
+            bool punctMarkOK;
 
             //wrong input loop
             while (true)
             {
-                if (userInput.Length == 12 || userInput.Length == 11 || userInput == "0")//check size
+                //resets every loop incase user switches input format :)
+                punctMarkOK = true;
+                //check size
+                if (userInput.Length == 12 || userInput.Length == 11 || userInput == "0")
                 {
-                    if (userInput.Length == 11)//if length is 11 = format is YYMMDD-nnnc
+                    //if length is 11 = format is YYMMDD-nnnc
+                    if (userInput.Length == 11)
                     {
                         //removs plusOrMinus sign so string can be parsed. outputs plusOrMinus
                         if (userInput[6] == '+' || userInput[6] == '-')
@@ -136,7 +142,7 @@ namespace PersonnummerCheck
                 month = int.Parse(personalNumber.Substring(4, 2));
                 day = int.Parse(personalNumber.Substring(6, 2));
                 birthNumber = int.Parse(personalNumber.Substring(8, 3));
-                controlNumber = int.Parse(personalNumber.Substring(11, 3));
+                controlNumber = int.Parse(personalNumber.Substring(11, 1));
             }
             //YYMMDD-nnnc || YYMMDD+nnnc
             else if (personalNumber.Length == 10)
@@ -145,8 +151,10 @@ namespace PersonnummerCheck
                 month = int.Parse(personalNumber.Substring(2, 2));
                 day = int.Parse(personalNumber.Substring(4, 2));
                 birthNumber = int.Parse(personalNumber.Substring(6, 3));
-                controlNumber = int.Parse(personalNumber.Substring(9, 3));
+                controlNumber = int.Parse(personalNumber.Substring(9, 1));
 
+                //e.g. 131212-**** => 20131212-**** AND 131212+**** = 19131212+****
+                //this means you can't write 901212-****, instead this is possible -> 901212+**** 
                 if (plusOrMinus == "+")
                 {
                     year += 1900;
@@ -155,6 +163,8 @@ namespace PersonnummerCheck
                 {
                     year += 2000;
                 }
+                //|||(är detta fel? lägg till funktionalitet som gör brytpunkt vid 1920/2020?)
+
             }
             else//default assign
             {
@@ -173,6 +183,8 @@ namespace PersonnummerCheck
         /// <returns></returns>
         static bool ValidDateCheck(int year, int month, int day)
         {
+
+
             //return false if year is not in specified range ( 1753 - 2020 )
             if (! ( year >= 1753 && year <= 2020 ) )
                 return false;
@@ -222,17 +234,60 @@ namespace PersonnummerCheck
             return birthNumber % 2 == 0;
         }
 
-        static bool ControlNumberCheck(string personalNumber)
+        static bool ControlNumberCheck(string personalNumber, int controlNumber)
         {
+            //int array pNums with all digits except controlNumber(the last number)
+            int[] pNums = new int[9];
 
-            for (int i = 0; i < personalNumber.Length; i++)
+            //fill int array from personal number (adjust for 10 or 12 digits)
+            for (int i = 0; i < 9; i++)
             {
-
+                if (personalNumber.Length == 12)
+                {
+                    pNums[i] = int.Parse(personalNumber.Substring(i + 2, 1));
+                }
+                else
+                {
+                    pNums[i] = int.Parse(personalNumber.Substring(i, 1));
+                }
             }
 
+            //sum of the products from luhn-algorithm
+            int luhnSum = 0;
+            //temporary integer which is added to luhnSum.
+            int temp;
+            //temporary integer that is multiplied to pNums
+            int x;
 
+            //loop to double every other number  
+            //(in reality it should start with 2 from the right, but since this is has an uneven length (9) both start and last value is doubled
+            for (int i = 0; i < 9; i++)
+            {
+                x = ((i+1) % 2) + 1; // x is alternating 2 and 1 (starting at 2)
+                temp = pNums[i] * x;
 
-            return true;
+                // check if temp is bigger than 10. 
+                if ( temp >= 10)
+                {
+                    //e.g. 6*2 = 12, sum of 1 and 2 = 3. 12-9 = 3
+                    temp -= 9;
+                }
+
+                luhnSum += temp;
+                //Console.WriteLine("x is = {0}\ntemp is = {1}\nluhnSum is = {2}", x, temp, luhnSum);
+            }
+
+            //given from excersice/wikpiedia
+            int luhnCalc = (10 - (luhnSum % 10)) % 10;
+
+            Console.WriteLine("Den inmatade kontrollsiffran var = {0}", controlNumber);
+            Console.WriteLine("Enligt luhn-algoritmen bör kontrollsifrran vara {0}", luhnCalc);
+
+            if (luhnCalc == controlNumber)
+                return true;
+            else
+                return false;
+
         }
     }
 }
