@@ -43,13 +43,12 @@ namespace PersonnummerCheck
                     {
                         Console.WriteLine("Det juridiska könet är MAN");
                     }
-                    //obs^ (this only writes out if validation is succesful, no use calculation gender if there is something wrong?)
+                    //obs^ (this only writes out if validation is succesful, no use calculating gender if there is something wrong?)
                 }
                 else
                 {
                     Console.WriteLine("Detta personnummer är ICKE GILTIGT");
                 }
-
 
                 //pause
                 Console.WriteLine("Press any key to try again.");
@@ -68,9 +67,9 @@ namespace PersonnummerCheck
             Console.Clear();
             Console.WriteLine("***Välkommen till PersonnummerCheck!***");
             Console.WriteLine("Detta program kollar om det angivna personnumret är giltigt.");
-            Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****) eller 10 siffror (YYMMDD-****) " +
-                "\n(skiljetecknet ska vara + eller - beroende på vilket århundrade. + = 1900, - = 2000):  ");
-            Console.WriteLine("Enter '0' to quit.");
+            Console.WriteLine("\nAnge personnumret i 12 siffor (YYYYMMDD****) eller 10 siffror (YYMMDD-****):  ");
+            Console.WriteLine("\n\nEnter '0' to quit.");
+            Console.SetCursorPosition(0, 4);
         }
 
         /// <summary>
@@ -118,7 +117,6 @@ namespace PersonnummerCheck
                 userInput = Console.ReadLine();
             }
 
-
             if (userInput == "0")
                 return "0";
             else
@@ -133,7 +131,13 @@ namespace PersonnummerCheck
         /// <param name="month"></param>
         /// <param name="day"></param>
         /// <param name="birthNumber"></param>
-        static void SplitPersonalNumber(string personalNumber, string plusOrMinus, out int year, out int month, out int day, out int birthNumber, out int controlNumber)
+        static void SplitPersonalNumber(string personalNumber,
+                                        string plusOrMinus,
+                                        out int year,
+                                        out int month,
+                                        out int day,
+                                        out int birthNumber,
+                                        out int controlNumber)
         {
             //YYYYMMDDnnnc
             if (personalNumber.Length == 12)
@@ -153,18 +157,30 @@ namespace PersonnummerCheck
                 birthNumber = int.Parse(personalNumber.Substring(6, 3));
                 controlNumber = int.Parse(personalNumber.Substring(9, 1));
 
-                //e.g. 131212-**** => 20131212-**** AND 131212+**** = 19131212+****
-                //this means you can't write 901212-****, instead this is possible -> 901212+**** 
+                // + sign is for those that are 100years and over. (this year is 2020)
                 if (plusOrMinus == "+")
                 {
-                    year += 1900;
+                    if ( year <= 20 )
+                    {
+                        year += 1900;
+                    }
+                    else
+                    {
+                        year += 1800;
+                    }
+                    
                 }
                 else if (plusOrMinus == "-")
                 {
-                    year += 2000;
+                    if (year <= 20)
+                    {
+                        year += 2000;
+                    }
+                    else
+                    {
+                        year += 1900;
+                    }
                 }
-                //|||(är detta fel? lägg till funktionalitet som gör brytpunkt vid 1920/2020?)
-
             }
             else//default assign
             {
@@ -183,8 +199,6 @@ namespace PersonnummerCheck
         /// <returns></returns>
         static bool ValidDateCheck(int year, int month, int day)
         {
-
-
             //return false if year is not in specified range ( 1753 - 2020 )
             if (! ( year >= 1753 && year <= 2020 ) )
                 return false;
@@ -238,7 +252,7 @@ namespace PersonnummerCheck
         {
             //int array pNums with all digits except controlNumber(the last number)
             int[] pNums = new int[9];
-
+            
             //fill int array from personal number (adjust for 10 or 12 digits)
             for (int i = 0; i < 9; i++)
             {
@@ -252,19 +266,18 @@ namespace PersonnummerCheck
                 }
             }
 
+            
+            int[] alternatingTwos = new int[9] { 2, 1, 2, 1, 2, 1, 2, 1, 2 };
             //sum of the products from luhn-algorithm
             int luhnSum = 0;
             //temporary integer which is added to luhnSum.
             int temp;
-            //temporary integer that is multiplied to pNums
-            int x;
 
             //loop to double every other number  
             //(in reality it should start with 2 from the right, but since this is has an uneven length (9) both start and last value is doubled
             for (int i = 0; i < 9; i++)
             {
-                x = ((i+1) % 2) + 1; // x is alternating 2 and 1 (starting at 2)
-                temp = pNums[i] * x;
+                temp = pNums[i] * alternatingTwos[i];
 
                 // check if temp is bigger than 10. 
                 if ( temp >= 10)
@@ -274,7 +287,6 @@ namespace PersonnummerCheck
                 }
 
                 luhnSum += temp;
-                //Console.WriteLine("x is = {0}\ntemp is = {1}\nluhnSum is = {2}", x, temp, luhnSum);
             }
 
             //given from excersice/wikpiedia
